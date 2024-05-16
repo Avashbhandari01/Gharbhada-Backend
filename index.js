@@ -15,8 +15,7 @@ const Message = require("./models/messages");
 //init
 const PORT = 5123;
 const DB =
-  //"mongodb+srv://bistsaniya:2076Asoj21!@cluster0.kfmu6iu.mongodb.net/?retryWrites=true";
-  "mongodb+srv://avash115:4birHfRkHpOPtV8E@ghat-bhada-db.cwrkkex.mongodb.net/?retryWrites=true";
+  "mongodb+srv://bistsaniya:2076Asoj21!@cluster0.kfmu6iu.mongodb.net/?retryWrites=true";
 
 const app = express();
 
@@ -53,14 +52,15 @@ app.post("/messages", async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
-//connection
+
+// Database connection
 mongoose
   .connect(DB)
   .then(() => {
-    console.log("Connection successful");
+    console.log('Connection successful');
   })
   .catch((e) => {
-    console.log(e);
+    console.log('Database connection error:', e);
   });
 
 app.listen(PORT, "0.0.0.0", () => {

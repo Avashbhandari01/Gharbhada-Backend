@@ -6,7 +6,7 @@ const adminRouter = express.Router();
 
 adminRouter.post("/admin/add-property", async (req, res) => {
   try {
-    const { name, description, images, location, price } = req.body;
+    const { name, description, images, location, price, latlong } = req.body;
 
     let property = new Property({
       name,
@@ -14,6 +14,7 @@ adminRouter.post("/admin/add-property", async (req, res) => {
       images,
       location,
       price,
+      latlong
     });
     property = await property.save();
     res.json(property);
