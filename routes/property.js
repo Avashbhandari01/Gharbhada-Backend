@@ -17,7 +17,7 @@ propertyRouter.get("/api/property", auth, async (req, res) => {
 });
 
 // Get searched properties
-propertyRouter.get("/api/property/search", auth, async (req, res) => {
+propertyRouter.get("/api/property/search/name", auth, async (req, res) => {
   const { name } = req.body;
 
   // Validate the name parameter
@@ -46,12 +46,12 @@ propertyRouter.get("/api/property/search", auth, async (req, res) => {
 });
 
 // Get searched properties by location
-propertyRouter.get("/api/property/search", auth, async (req, res) => {
+propertyRouter.get("/api/property/search/location", auth, async (req, res) => {
   const { location } = req.body;
 
   // Validate the name parameter
   if (!location) {
-    return res.status(400).json({ error: "Name parameter is required" });
+    return res.status(400).json({ error: "Location parameter is required" });
   }
 
   try {
