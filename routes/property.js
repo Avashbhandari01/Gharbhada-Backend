@@ -16,59 +16,33 @@ propertyRouter.get("/api/property", auth, async (req, res) => {
   }
 });
 
-// Get searched properties
-propertyRouter.get("/api/property/search/name", auth, async (req, res) => {
-  const { name } = req.body;
+// Combined search for properties by name or location
+propertyRouter.get("/api/property/search", async (req, res) => {
+  const { search } = req.body;
 
-  // Validate the name parameter
-  if (!name) {
-    return res.status(400).json({ error: "Name parameter is required" });
+  // Validate the search parameter
+  if (!search) {
+    return res.status(400).json({ error: "Search parameter is required" });
   }
 
   try {
-    // Find properties with names that match the search term
-    const regex = new RegExp(name);
+    const regex = new RegExp(search, "i");
     console.log("Search regex:", regex);
 
-    const properties = await Property.find({ name: { $regex: regex } });
+    // Find properties that match the search term in either name or location
+    const properties = await Property.find({
+      $or: [
+        { name: { $regex: regex } },
+        { location: { $regex: regex } }
+      ]
+    });
 
     // Check for empty results
     if (!properties.length) {
       return res.json({ message: "No properties found matching the search term." });
     }
 
-    res.json({
-      properties
-    });
-  } catch (e) {
-    res.status(500).json({ error: e.message });
-  }
-});
-
-// Get searched properties by location
-propertyRouter.get("/api/property/search/location", auth, async (req, res) => {
-  const { location } = req.body;
-
-  // Validate the name parameter
-  if (!location) {
-    return res.status(400).json({ error: "Location parameter is required" });
-  }
-
-  try {
-    // Find properties with names that match the search term
-    const regex = new RegExp(location);
-    console.log("Search regex:", regex);
-
-    const properties = await Property.find({ location: { $regex: regex } });
-
-    // Check for empty results
-    if (!properties.length) {
-      return res.json({ message: "No properties found matching the search term." });
-    }
-
-    res.json({
-      properties
-    });
+    res.json({ properties });
   } catch (e) {
     res.status(500).json({ error: e.message });
   }
