@@ -18,7 +18,7 @@ propertyRouter.get("/api/property", auth, async (req, res) => {
 
 // Combined search for properties by name or location
 propertyRouter.get("/api/property/search", async (req, res) => {
-  const { search } = req.body;
+  const { search } = req.query;
 
   // Validate the search parameter
   if (!search) {
