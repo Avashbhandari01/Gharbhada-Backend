@@ -9,18 +9,6 @@ require('dotenv').config();
 
 const orderRouter = express.Router();
 
-// Configure Nodemailer transporter
-const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  host: "smtp.gmail.com",
-  port: 587,
-  secure: false, // true for 465, false for other ports
-  auth: {
-    user: process.env.USER,
-    pass: process.env.APP_PASSWORD,
-  }
-});
-
 orderRouter.post("/api/order/:prop_id", async (req, res) => {
   const { userID } = req.body;
   try {
@@ -61,46 +49,72 @@ orderRouter.get("/admin/get-orders", async (req, res) => {
   }
 });
 
-// confirm or delete orders from admin
 orderRouter.put("/admin/confirmOrreject", async (req, res) => {
   try {
     const { id, status } = req.body;
+
     if (status === "rejected") {
       let order = await Order.findByIdAndDelete(id);
-      let product = await Property.updateOne(
+
+      if (!order) {
+        return res.status(404).json({ error: "Order not found" });
+      }
+
+      await Property.updateOne(
         { _id: new ObjectId(order.propertyID) },
         { isBought: false }
       );
-      res.json(order);
+
+      return res.json(order);
     } else {
       let order = await Order.findById(id);
+
+      if (!order) {
+        return res.status(404).json({ error: "Order not found" });
+      }
+
       order.status = "completed";
       order = await order.save();
 
       // Fetch user information
       const user = await User.findById(order.userID);
+      if (!user) {
+        return res.status(404).json({ error: "User not found" });
+      }
       const userEmail = user.email;
+
+      const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        host: "smtp.gmail.com",
+        port: 587,
+        secure: false, // true for 465, false for other ports
+        auth: {
+          user: process.env.USER,
+          pass: process.env.APP_PASSWORD,
+        }
+      });
 
       // Send confirmation email
       const mailOptions = {
-        from: process.env.USER,
+        from: {
+          name: 'Ghar Bhada',
+          address: process.env.USER
+        }, // Sender address
         to: userEmail,
-        subject: 'Order Confirmation',
+        subject: "Order Confirmation",
         text: `Dear ${user.name},\n\nYour order has been confirmed and is now completed.\n\nThank you for your purchase!`
       };
 
       transporter.sendMail(mailOptions, (error, info) => {
         if (error) {
-          console.error('Error sending email:', error);
-        } else {
-          console.log('Email sent:', info.response);
+          return res.status(500).json({ error: error.message });
         }
       });
 
-      res.json(order);
+      return res.json(order);
     }
   } catch (e) {
-    res.status(500).json({ error: e.message });
+    return res.status(500).json({ error: e.message });
   }
 });
 
