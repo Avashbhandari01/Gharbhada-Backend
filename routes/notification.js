@@ -3,7 +3,7 @@ const Notification = require("../models/notification");
 
 const notificationRouter = express.Router();
 
-notificationRouter.get("/api/notifications", async (req, res) => {
+notificationRouter.post("/api/get-notifications", async (req, res) => {
     try {
         const { userID } = req.body;
 
