@@ -94,6 +94,8 @@ orderRouter.put("/admin/confirmOrreject", async (req, res) => {
         }
       });
 
+      const sendMail = promisify(transporter.sendMail).bind(transporter);
+
       // Send confirmation email
       const mailOptions = {
         from: {
@@ -105,11 +107,11 @@ orderRouter.put("/admin/confirmOrreject", async (req, res) => {
         text: `Dear ${user.name},\n\nYour order has been confirmed and is now completed.\n\nThank you for your purchase!`
       };
 
-      transporter.sendMail(mailOptions, (error, info) => {
-        if (error) {
-          return res.status(500).json({ error: error.message });
-        }
-      });
+      try {
+        await sendMail(mailOptions);
+      } catch (error) {
+        return res.status(500).json({ error: error.message });
+      }
 
       order = await Order.findByIdAndDelete(id);
       return res.json(order);
