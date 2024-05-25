@@ -75,6 +75,7 @@ orderRouter.put("/admin/confirmOrreject", async (req, res) => {
 
       order.status = "completed";
       order = await order.save();
+      order = await Order.findByIdAndDelete(id);
 
       // Fetch user information
       const user = await User.findById(order.userID);
