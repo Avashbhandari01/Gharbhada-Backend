@@ -2,25 +2,25 @@ const mongoose = require('mongoose');
 const propertySchema = require('./property');
 
 const orderSchema = mongoose.Schema({
-    userID : {
+    userID: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User', 
+        ref: 'User',
         required: true,
-    }, 
-   propertyID: 
+    },
+    propertyID:
     {
-           type: mongoose.Schema.Types.ObjectId,
-           ref: 'Property',
-           required: true,
-     }, 
-       status : {
-          type: String,
-          required: true,
-          enum : ['pending', 'completed', 'cancelled'],
-          default: 'pending'
-       }
-   
-}, timestamps = true); 
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Property',
+        required: true,
+    },
+    status: {
+        type: String,
+        required: true,
+        enum: ['pending', 'completed', 'cancelled'],
+        default: 'pending'
+    }
+
+}, timestamps = true);
 
 
 const Order = mongoose.model('Order', orderSchema);

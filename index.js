@@ -13,7 +13,9 @@ const adminRouter = require("./routes/admin");
 const propertyRouter = require("./routes/property");
 const userRouter = require("./routes/user");
 const orderRouter = require("./routes/order");
+const notificationRouter = require("./routes/notification");
 const Message = require("./models/messages");
+
 
 //init
 const PORT = 5123;
@@ -37,6 +39,7 @@ app.use(adminRouter);
 app.use(propertyRouter);
 app.use(userRouter);
 app.use(orderRouter);
+app.use(notificationRouter);
 
 app.get("/messages", async (req, res) => {
   try {
