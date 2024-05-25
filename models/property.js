@@ -36,7 +36,15 @@ const propertySchema = mongoose.Schema({
     type: String,
     required: true,
     trim: true,
-  }
+  },
+  aana: {
+    type: Number,
+    required: true,
+  },
+  road: {
+    type: Number,
+    required: true,
+  },
 });
 
 const Property = mongoose.model('Property', propertySchema);
