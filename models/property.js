@@ -39,11 +39,11 @@ const propertySchema = mongoose.Schema({
   },
   aana: {
     type: Number,
-    required: true,
+    required: false,
   },
   road: {
     type: Number,
-    required: true,
+    required: false,
   },
 });
 

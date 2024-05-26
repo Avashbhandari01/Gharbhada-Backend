@@ -4,6 +4,7 @@ const Property = require("../models/property");
 const User = require("../models/user");
 const nodemailer = require('nodemailer');
 const ObjectId = require("mongoose").Types.ObjectId;
+const { promisify } = require('util');
 
 require('dotenv').config();
 
